@@ -733,9 +733,24 @@ type HashProvider interface {
 	GetHash(opts bccsp.HashOpts) (hash.Hash, error)
 }
 
+// CommitNotification is sent on each block commit to the channel returned by PeerLedger.CommitNotificationsChannel().
+// TxsInfo field contains the info about individual transactions in the block in the order the transactions appear in the block
+// The transactions with a unique and non-empty txID are included in the notification
 type CommitNotification struct {
-	BlockNumber         uint64
-	TxIDValidationCodes map[string]peer.TxValidationCode
+	BlockNumber uint64
+	TxsInfo     []*CommitNotificationTxInfo
+}
+
+// CommitNotificationTxInfo contains the details of a transaction that is included in the CommitNotification
+// ChaincodeID will be nil if the transaction is not an endorser transaction. This may or may not be nil if the tranasction is invalid.
+// Specifically, it will be nil if the transaction is marked invalid by the validator (e.g., bad payload or insufficient endorements) and it will be non-nil if the transaction is marked invalid for concurrency conflicts.
+// However, it is guaranteed be non-nil if the transaction is a valid endorser transaction.
+type CommitNotificationTxInfo struct {
+	TxType             common.HeaderType
+	TxID               string
+	ValidationCode     peer.TxValidationCode
+	ChaincodeID        *peer.ChaincodeID
+	ChaincodeEventData []byte
 }
 
 //go:generate counterfeiter -o mock/state_listener.go -fake-name StateListener . StateListener

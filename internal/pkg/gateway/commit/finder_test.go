@@ -90,8 +90,11 @@ func TestFinder(t *testing.T) {
 		commitSend := make(chan *ledger.CommitNotification)
 		msg := &ledger.CommitNotification{
 			BlockNumber: 1,
-			TxIDValidationCodes: map[string]peer.TxValidationCode{
-				"TX_ID": peer.TxValidationCode_MVCC_READ_CONFLICT,
+			TxsInfo: []*ledger.CommitNotificationTxInfo{
+				{
+					TxID:           "TX_ID",
+					ValidationCode: peer.TxValidationCode_MVCC_READ_CONFLICT,
+				},
 			},
 		}
 		defer close(sendUntilDone(commitSend, msg))

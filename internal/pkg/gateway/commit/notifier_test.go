@@ -56,8 +56,11 @@ func TestNotifier(t *testing.T) {
 
 			commitSend <- &ledger.CommitNotification{
 				BlockNumber: 1,
-				TxIDValidationCodes: map[string]peer.TxValidationCode{
-					"TX_ID": peer.TxValidationCode_MVCC_READ_CONFLICT,
+				TxsInfo: []*ledger.CommitNotificationTxInfo{
+					{
+						TxID:           "TX_ID",
+						ValidationCode: peer.TxValidationCode_MVCC_READ_CONFLICT,
+					},
 				},
 			}
 			actual := <-commitReceive
@@ -80,9 +83,15 @@ func TestNotifier(t *testing.T) {
 
 			commitSend <- &ledger.CommitNotification{
 				BlockNumber: 1,
-				TxIDValidationCodes: map[string]peer.TxValidationCode{
-					"WRONG_TX_ID": peer.TxValidationCode_VALID,
-					"TX_ID":       peer.TxValidationCode_MVCC_READ_CONFLICT,
+				TxsInfo: []*ledger.CommitNotificationTxInfo{
+					{
+						TxID:           "WRONG_TX_ID",
+						ValidationCode: peer.TxValidationCode_VALID,
+					},
+					{
+						TxID:           "TX_ID",
+						ValidationCode: peer.TxValidationCode_MVCC_READ_CONFLICT,
+					},
 				},
 			}
 			actual := <-commitReceive
@@ -105,14 +114,20 @@ func TestNotifier(t *testing.T) {
 
 			commitSend <- &ledger.CommitNotification{
 				BlockNumber: 1,
-				TxIDValidationCodes: map[string]peer.TxValidationCode{
-					"WRONG_TX_ID": peer.TxValidationCode_VALID,
+				TxsInfo: []*ledger.CommitNotificationTxInfo{
+					{
+						TxID:           "WRONG_TX_ID",
+						ValidationCode: peer.TxValidationCode_VALID,
+					},
 				},
 			}
 			commitSend <- &ledger.CommitNotification{
 				BlockNumber: 2,
-				TxIDValidationCodes: map[string]peer.TxValidationCode{
-					"TX_ID": peer.TxValidationCode_MVCC_READ_CONFLICT,
+				TxsInfo: []*ledger.CommitNotificationTxInfo{
+					{
+						TxID:           "TX_ID",
+						ValidationCode: peer.TxValidationCode_MVCC_READ_CONFLICT,
+					},
 				},
 			}
 			actual := <-commitReceive
@@ -135,14 +150,20 @@ func TestNotifier(t *testing.T) {
 
 			commitSend <- &ledger.CommitNotification{
 				BlockNumber: 1,
-				TxIDValidationCodes: map[string]peer.TxValidationCode{
-					"TX_ID": peer.TxValidationCode_MVCC_READ_CONFLICT,
+				TxsInfo: []*ledger.CommitNotificationTxInfo{
+					{
+						TxID:           "TX_ID",
+						ValidationCode: peer.TxValidationCode_MVCC_READ_CONFLICT,
+					},
 				},
 			}
 			commitSend <- &ledger.CommitNotification{
 				BlockNumber: 2,
-				TxIDValidationCodes: map[string]peer.TxValidationCode{
-					"TX_ID": peer.TxValidationCode_MVCC_READ_CONFLICT,
+				TxsInfo: []*ledger.CommitNotificationTxInfo{
+					{
+						TxID:           "TX_ID",
+						ValidationCode: peer.TxValidationCode_MVCC_READ_CONFLICT,
+					},
 				},
 			}
 			actual := <-commitReceive
@@ -165,14 +186,20 @@ func TestNotifier(t *testing.T) {
 
 			commitSend <- &ledger.CommitNotification{
 				BlockNumber: 1,
-				TxIDValidationCodes: map[string]peer.TxValidationCode{
-					"TX_ID": peer.TxValidationCode_MVCC_READ_CONFLICT,
+				TxsInfo: []*ledger.CommitNotificationTxInfo{
+					{
+						TxID:           "TX_ID",
+						ValidationCode: peer.TxValidationCode_MVCC_READ_CONFLICT,
+					},
 				},
 			}
 			commitSend <- &ledger.CommitNotification{
 				BlockNumber: 2,
-				TxIDValidationCodes: map[string]peer.TxValidationCode{
-					"TX_ID": peer.TxValidationCode_VALID,
+				TxsInfo: []*ledger.CommitNotificationTxInfo{
+					{
+						TxID:           "TX_ID",
+						ValidationCode: peer.TxValidationCode_VALID,
+					},
 				},
 			}
 			<-commitReceive
@@ -193,8 +220,11 @@ func TestNotifier(t *testing.T) {
 			close(done)
 			commitSend <- &ledger.CommitNotification{
 				BlockNumber: 1,
-				TxIDValidationCodes: map[string]peer.TxValidationCode{
-					"TX_ID": peer.TxValidationCode_MVCC_READ_CONFLICT,
+				TxsInfo: []*ledger.CommitNotificationTxInfo{
+					{
+						TxID:           "TX_ID",
+						ValidationCode: peer.TxValidationCode_MVCC_READ_CONFLICT,
+					},
 				},
 			}
 			_, ok := <-commitReceive
@@ -215,8 +245,11 @@ func TestNotifier(t *testing.T) {
 
 			commitSend <- &ledger.CommitNotification{
 				BlockNumber: 1,
-				TxIDValidationCodes: map[string]peer.TxValidationCode{
-					"TX_ID": peer.TxValidationCode_MVCC_READ_CONFLICT,
+				TxsInfo: []*ledger.CommitNotificationTxInfo{
+					{
+						TxID:           "TX_ID",
+						ValidationCode: peer.TxValidationCode_MVCC_READ_CONFLICT,
+					},
 				},
 			}
 			actual1 := <-commitReceive1
@@ -246,8 +279,11 @@ func TestNotifier(t *testing.T) {
 			close(done)
 			commitSend <- &ledger.CommitNotification{
 				BlockNumber: 1,
-				TxIDValidationCodes: map[string]peer.TxValidationCode{
-					"TX_ID": peer.TxValidationCode_MVCC_READ_CONFLICT,
+				TxsInfo: []*ledger.CommitNotificationTxInfo{
+					{
+						TxID:           "TX_ID",
+						ValidationCode: peer.TxValidationCode_MVCC_READ_CONFLICT,
+					},
 				},
 			}
 			_, ok1 := <-commitReceive1
@@ -324,8 +360,11 @@ func TestNotifier(t *testing.T) {
 
 			commitSend2 <- &ledger.CommitNotification{
 				BlockNumber: 1,
-				TxIDValidationCodes: map[string]peer.TxValidationCode{
-					"TX_ID": peer.TxValidationCode_MVCC_READ_CONFLICT,
+				TxsInfo: []*ledger.CommitNotificationTxInfo{
+					{
+						TxID:           "TX_ID",
+						ValidationCode: peer.TxValidationCode_MVCC_READ_CONFLICT,
+					},
 				},
 			}
 

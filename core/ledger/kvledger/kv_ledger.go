@@ -933,22 +933,29 @@ func (l *kvLedger) sendCommitNotification(blockNum uint64, txStatsInfo []*valida
 		close(l.commitNotifier.dataChannel)
 		l.commitNotifier = nil
 	default:
-		txIDValidationCodes := map[string]peer.TxValidationCode{}
-
+		txsByID := map[string]struct{}{}
+		txs := []*ledger.CommitNotificationTxInfo{}
 		for _, t := range txStatsInfo {
 			txID := t.TxIDFromChannelHeader
-			_, ok := txIDValidationCodes[txID]
+			_, ok := txsByID[txID]
 
 			if txID == "" || ok {
 				continue
 			}
+			txsByID[txID] = struct{}{}
 
-			txIDValidationCodes[txID] = t.ValidationCode
+			txs = append(txs, &ledger.CommitNotificationTxInfo{
+				TxType:             t.TxType,
+				TxID:               t.TxIDFromChannelHeader,
+				ValidationCode:     t.ValidationCode,
+				ChaincodeID:        t.ChaincodeID,
+				ChaincodeEventData: t.ChaincodeEventData,
+			})
 		}
 
 		l.commitNotifier.dataChannel <- &ledger.CommitNotification{
-			BlockNumber:         blockNum,
-			TxIDValidationCodes: txIDValidationCodes,
+			BlockNumber: blockNum,
+			TxsInfo:     txs,
 		}
 	}
 }
